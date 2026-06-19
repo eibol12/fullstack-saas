@@ -1,0 +1,18 @@
+@design_id = 6830e74f-18cc-4186-ade8-9d5a9e6eaaa5
+
+### Login
+POST {{host}}/api/v1/auth/login/
+Content-Type: application/json
+
+{
+  "email": "{{first_username}}",
+  "password": "{{first_password}}"
+}
+
+> {%
+    client.global.set("access_token", response.body.access);
+%}
+
+###
+GET {{host}}/api/v1/design/{{design_id}}/
+Authorization: Bearer {{access_token}}

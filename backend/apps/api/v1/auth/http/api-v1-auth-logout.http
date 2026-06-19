@@ -1,0 +1,19 @@
+### Login
+POST {{host}}/api/v1/auth/login/
+Content-Type: application/json
+
+{
+  "email": "{{second_username}}",
+  "password": "{{second_password}}"
+}
+
+> {%
+    client.global.set("access_token", response.body.access);
+%}
+
+### Logout
+POST {{host}}/api/v1/auth/logout/
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{}

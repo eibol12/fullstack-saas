@@ -1,0 +1,26 @@
+@analysis_id = c2185041-b239-4561-9ad2-3bef9ae3e30d
+
+### Login
+POST {{host}}/api/v1/auth/login/
+Content-Type: application/json
+
+{
+  "email": "{{second_username}}",
+  "password": "{{second_password}}"
+}
+
+> {%
+    client.global.set("access_token", response.body.access);
+%}
+
+###
+POST {{host}}/api/v1/design/
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "name": "First API Rigging No Preferences",
+  "set_active": "True",
+  "analysis_id": "{{analysis_id}}",
+  "user_preferences": []
+}

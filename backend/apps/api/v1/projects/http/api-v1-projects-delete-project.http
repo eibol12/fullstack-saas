@@ -1,0 +1,17 @@
+@project_id = 828cb705-d315-4f03-9367-660e54c42928
+### GET token
+POST {{host}}/api/v1/auth/token/
+Content-Type: application/json
+
+{
+  "username": "{{first_username}}",
+  "password": "{{first_password}}"
+}
+
+> {%
+    client.global.set("access_token", response.body.access);
+%}
+
+### UPDATE project
+DELETE {{host}}/api/v1/projects/{{project_id}}/
+Authorization: Bearer {{access_token}}

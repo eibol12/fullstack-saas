@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "composite": true,                                    /* REQUERIDO: Permite que otros tsconfig referencien este archivo */
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "types": ["node"],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": false,                                      /* CAMBIO: Debe estar en false para que el proyecto principal pueda leer los metadatos */
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "include": ["vite.config.ts"]
+}

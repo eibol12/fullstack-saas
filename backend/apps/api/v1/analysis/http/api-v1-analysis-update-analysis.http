@@ -1,0 +1,24 @@
+@analysis_id = 9c4bdfc1-7eb5-4a32-a105-1562e98d73ea
+### GET token
+POST {{host}}/api/v1/auth/token/
+Content-Type: application/json
+
+{
+  "username": "{{first_username}}",
+  "password": "{{first_password}}"
+}
+
+> {%
+    client.global.set("access_token", response.body.access);
+%}
+
+###
+PATCH {{host}}/api/v1/analysis/{{analysis_id}}/
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "name": "Eureka API can update analysis",
+  "maximum_gross_weight": 9999.0,
+  "location": "offshore"
+}

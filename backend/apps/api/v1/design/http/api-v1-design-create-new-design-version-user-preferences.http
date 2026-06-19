@@ -1,0 +1,52 @@
+@analysis_id = de44ede8-533c-49f5-a290-685352851e10
+
+### Login
+POST {{host}}/api/v1/auth/login/
+Content-Type: application/json
+
+{
+  "email": "{{first_username}}",
+  "password": "{{first_password}}"
+}
+
+> {%
+    client.global.set("access_token", response.body.access);
+%}
+
+###
+POST {{host}}/api/v1/design/
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "name": "Changed API name Rigging With User Preferences",
+  "set_active": true,
+  "analysis_id": "{{analysis_id}}",
+"user_preferences": {
+  "0": {
+    "component_type": "Masterlink",
+    "capacity": 20,
+    "manufacturer": "Green Pin",
+    "model": "P-6810"
+  },
+  "1": {
+    "component_type": "Shackle",
+    "capacity": 15,
+    "manufacturer": "Crosby",
+    "model": "G-2130"
+  },
+  "2": {
+    "component_type": "WireRope",
+    "capacity": 55,
+    "configuration": "vertical",
+    "termination": "ferrule",
+    "eye_type": "hard"
+  },
+  "3": {
+    "component_type": "Shackle",
+    "capacity": 10,
+    "manufacturer": "Crosby",
+    "model": "G-2130"
+  }
+}}
+

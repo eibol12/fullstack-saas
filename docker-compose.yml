@@ -1,0 +1,57 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-grispen}
+      POSTGRES_USER: ${POSTGRES_USER:-grispen}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-grispen}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-grispen} -d $${POSTGRES_DB:-grispen}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    # Override CMD for local development to use runserver with hot-reloading
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - RUNNING_IN_DOCKER=true
+      - DJANGO_ENV=dev
+      - DJANGO_DEBUG=True
+      - DATABASE_URL=postgres://${POSTGRES_USER:-grispen}:${POSTGRES_PASSWORD:-grispen}@db:5432/${POSTGRES_DB:-grispen}
+      - DATABASE_URL_DIRECT=postgres://${POSTGRES_USER:-grispen}:${POSTGRES_PASSWORD:-grispen}@db:5432/${POSTGRES_DB:-grispen}
+      - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,backend
+    env_file:
+      - ./backend/.env
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    image: node:22-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      # Anonymous volume prevents host node_modules from being used inside the container
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    # --host 0.0.0.0 is required for Vite to be accessible from outside the container
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

@@ -1,0 +1,167 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+ * Blueprint & Steel — Grispen Rigging design tokens
+ * Light mode: cool off-white drafting-board with deep navy accents.
+ * Dark mode:  rich charcoal CAD-style canvas with cyan/amber accents.
+ * ============================================================ */
+@layer base {
+  :root {
+    /* Surfaces */
+    --background: 210 25% 97%;          /* #F4F7F9-ish */
+    --foreground: 215 30% 12%;          /* near-ink */
+    --card: 0 0% 100%;
+    --card-foreground: 215 30% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 30% 12%;
+
+    /* Brand: Deep Navy primary */
+    --primary: 211 47% 22%;             /* navy */
+    --primary-foreground: 210 40% 98%;
+
+    /* Slate-blue secondary */
+    --secondary: 210 25% 92%;
+    --secondary-foreground: 215 30% 18%;
+
+    /* Muted greys */
+    --muted: 210 25% 94%;
+    --muted-foreground: 215 16% 40%;
+
+    /* Industrial Amber accent (used sparingly) */
+    --accent: 38 92% 50%;
+    --accent-foreground: 215 30% 12%;
+
+    --destructive: 0 72% 45%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214 24% 86%;
+    --input: 214 24% 86%;
+    --ring: 199 78% 42%;                /* teal focus ring */
+
+    --radius: 0.625rem;
+
+    /* Engineering semantic tokens */
+    --ok: 152 60% 36%;
+    --warn: 38 92% 50%;
+    --fail: 0 72% 45%;
+    --info: 199 78% 42%;
+  }
+
+  .dark {
+    /* Charcoal CAD canvas */
+    --background: 220 20% 9%;           /* ~zinc-900 / slate-900 mix */
+    --foreground: 210 25% 92%;
+    --card: 218 22% 12%;
+    --card-foreground: 210 25% 92%;
+    --popover: 218 22% 12%;
+    --popover-foreground: 210 25% 92%;
+
+    --primary: 199 90% 55%;             /* neon cyan */
+    --primary-foreground: 220 20% 9%;
+
+    --secondary: 218 18% 18%;
+    --secondary-foreground: 210 25% 92%;
+
+    --muted: 218 18% 16%;
+    --muted-foreground: 215 16% 65%;
+
+    --accent: 38 92% 55%;               /* safety amber */
+    --accent-foreground: 220 20% 9%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 218 18% 20%;
+    --input: 218 18% 20%;
+    --ring: 199 90% 55%;
+
+    --ok: 152 65% 50%;
+    --warn: 38 92% 55%;
+    --fail: 0 70% 60%;
+    --info: 199 90% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html, body, #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: 'cv11', 'ss01', 'ss03', 'cv02';
+  }
+  /* Ensure numbers and tabular data use tabular figures even outside <code> */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ============================================================
+ * Reusable component-style utility classes
+ * ============================================================ */
+@layer components {
+  /* Drafting-board background — apply to dashboards and visualizers */
+  .bg-drafting {
+    @apply bg-dot-grid bg-background;
+    background-size: 22px 22px;
+  }
+  .dark .bg-drafting {
+    background-image: radial-gradient(circle, rgba(148, 163, 184, 0.10) 1px, transparent 1px);
+  }
+
+  /* Soft inset / glassmorphism card */
+  .card-glass {
+    @apply rounded-lg border border-border bg-card/80 backdrop-blur-sm shadow-inset-soft;
+  }
+
+  /* Engineering data cell — monospaced, tabular */
+  .data-cell {
+    @apply font-mono tabular-nums text-foreground;
+  }
+
+  /* Status pill: outline + glowing dot */
+  .status-pill {
+    @apply inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5
+           text-xs font-medium tracking-wide;
+  }
+  .status-dot {
+    @apply inline-block h-2 w-2 rounded-full animate-pulse-dot;
+  }
+
+  /* Skeleton shimmer block */
+  .skeleton {
+    @apply relative overflow-hidden rounded-md bg-muted/70;
+  }
+  .skeleton::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full animate-shimmer;
+    background-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.35) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+  }
+  .dark .skeleton::after {
+    background-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      transparent 100%
+    );
+  }
+
+  /* Floating action bar (used in report viewer) */
+  .floating-bar {
+    @apply fixed bottom-6 left-1/2 -translate-x-1/2 z-40
+           inline-flex items-center gap-1 rounded-full
+           border border-border bg-card/90 backdrop-blur-md
+           shadow-paper px-2 py-1.5 print:hidden;
+  }
+}

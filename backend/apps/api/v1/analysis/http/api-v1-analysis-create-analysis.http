@@ -1,0 +1,33 @@
+@project_id = 7ff7025d-f121-41b0-8913-39c232e0aa4c
+### GET token
+POST {{host}}/api/v1/auth/token/
+Content-Type: application/json
+
+{
+  "username": "{{first_username}}",
+  "password": "{{first_password}}"
+}
+
+> {%
+    client.global.set("access_token", response.body.access);
+%}
+
+###
+POST {{host}}/api/v1/analysis/
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "name": "API 1st Analysis",
+  "project_id": "{{project_id}}",
+  "maximum_gross_weight": 8888.0,
+  "location": "offshore",
+  "lifting_points_qty": 2,
+  "configuration": {
+  "h_max": 7.0,
+  "L1": 4.0,
+  "h1": 0.0,
+  "L2": 5.0,
+  "h2": 0.0
+  }
+}

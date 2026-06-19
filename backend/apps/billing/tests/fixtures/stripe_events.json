@@ -1,0 +1,6 @@
+{
+  "customer_created": { /* Stripe event payload */ },
+  "subscription_created": { /* Stripe event payload */ },
+  "subscription_updated": { /* Stripe event payload */ },
+  "invoice_paid": { /* Stripe event payload */ }
+}

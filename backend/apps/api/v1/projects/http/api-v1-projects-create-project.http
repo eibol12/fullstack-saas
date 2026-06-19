@@ -1,0 +1,24 @@
+
+### GET token
+POST {{host}}/api/v1/auth/token/
+Content-Type: application/json
+
+{
+  "username": "{{first_username}}",
+  "password": "{{first_password}}"
+}
+
+> {%
+    client.global.set("access_token", response.body.access);
+%}
+
+###
+POST http://127.0.0.1:8000/api/v1/projects/
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "name": "My API 2st Project",
+  "description": "This is my second project created from the API"
+}
+

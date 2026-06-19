@@ -1,0 +1,153 @@
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { AnalysisFormData } from '@/types'
+
+const analysisSchema = z.object({
+  name: z.string().min(1, 'Analysis name is required'),
+  maximum_gross_weight: z.number().min(0.1, 'Weight must be positive'),
+  location: z.enum(['onshore', 'offshore', 'inshore', 'subsea']),
+  lifting_points_qty: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]),
+  h_max: z.number().min(0, 'Height must be positive'),
+  L1: z.number().min(0).optional(),
+  h1: z.number().min(0).optional(),
+  L2: z.number().min(0).optional(),
+  h2: z.number().min(0).optional(),
+  L3: z.number().min(0).optional(),
+  h3: z.number().min(0).optional(),
+  L4: z.number().min(0).optional(),
+  h4: z.number().min(0).optional(),
+  quadrant: z.enum(['center', 'left', 'right']).optional(),
+})
+
+interface AnalysisFormProps {
+  initialData?: Partial<AnalysisFormData>
+  onSubmit: (data: AnalysisFormData) => Promise<void>
+  onCancel?: () => void
+  submitLabel?: string
+}
+
+export function AnalysisForm({ initialData, onSubmit, onCancel, submitLabel = 'Create Analysis' }: AnalysisFormProps) {
+  const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm<AnalysisFormData>({
+    resolver: zodResolver(analysisSchema),
+    defaultValues: initialData || {
+      lifting_points_qty: 2,
+      location: 'offshore',
+      h_max: 0,
+      L1: 0,
+      h1: 0,
+      L2: 0,
+      h2: 0,
+    },
+  })
+
+  const liftingPoints = watch('lifting_points_qty')
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Analysis Name *</label>
+          <input {...register('name')} type="text" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+          {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Maximum Gross Weight (kg) *</label>
+          <input {...register('maximum_gross_weight', { valueAsNumber: true })} type="number" step="0.01" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+          {errors.maximum_gross_weight && <p className="mt-1 text-sm text-red-600">{errors.maximum_gross_weight.message}</p>}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Location *</label>
+          <select {...register('location')} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+            <option value="offshore">Offshore</option>
+            <option value="onshore">Onshore</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Lifting Points Quantity *</label>
+          <select {...register('lifting_points_qty', { valueAsNumber: true })} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+            <option value={1}>1 Point</option>
+            <option value={2}>2 Points</option>
+            <option value={3}>3 Points</option>
+            <option value={4}>4 Points</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="border-t pt-4">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Configuration</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">h_max (m) *</label>
+            <input {...register('h_max', { valueAsNumber: true })} type="number" step="0.01" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+            {errors.h_max && <p className="mt-1 text-sm text-red-600">{errors.h_max.message}</p>}
+          </div>
+
+          {liftingPoints >= 1 && (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">L1 (m)</label>
+                <input {...register('L1', { valueAsNumber: true })} type="number" step="0.01" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">h1 (m)</label>
+                <input {...register('h1', { valueAsNumber: true })} type="number" step="0.01" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+              </div>
+            </>
+          )}
+
+          {liftingPoints >= 2 && (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">L2 (m)</label>
+                <input {...register('L2', { valueAsNumber: true })} type="number" step="0.01" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">h2 (m)</label>
+                <input {...register('h2', { valueAsNumber: true })} type="number" step="0.01" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+              </div>
+            </>
+          )}
+
+          {liftingPoints >= 3 && (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">L3 (m)</label>
+                <input {...register('L3', { valueAsNumber: true })} type="number" step="0.01" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">h3 (m)</label>
+                <input {...register('h3', { valueAsNumber: true })} type="number" step="0.01" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+              </div>
+            </>
+          )}
+
+          {liftingPoints >= 4 && (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">L4 (m)</label>
+                <input {...register('L4', { valueAsNumber: true })} type="number" step="0.01" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">h4 (m)</label>
+                <input {...register('h4', { valueAsNumber: true })} type="number" step="0.01" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div className="flex justify-end space-x-3 pt-4 border-t">
+        {onCancel && (
+          <button type="button" onClick={onCancel} className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Cancel</button>
+        )}
+        <button type="submit" disabled={isSubmitting} className="px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50">
+          {isSubmitting ? 'Calculating...' : submitLabel}
+        </button>
+      </div>
+    </form>
+  )
+}

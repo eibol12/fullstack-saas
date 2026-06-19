@@ -1,0 +1,22 @@
+@project_id = 7ff7025d-f121-41b0-8913-39c232e0aa4c
+### GET token
+POST {{host}}/api/v1/auth/token/
+Content-Type: application/json
+
+{
+  "username": "{{first_username}}",
+  "password": "{{first_password}}"
+}
+
+> {%
+    client.global.set("access_token", response.body.access);
+%}
+
+###
+GET {{host}}/api/v1/analysis/
+Authorization: Bearer {{access_token}}
+
+
+###
+GET {{host}}/api/v1/analysis/?project_id={{project_id}}
+Authorization: Bearer {{access_token}}

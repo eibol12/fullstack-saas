@@ -1,0 +1,82 @@
+// ============================================
+// USER & AUTHENTICATION TYPES
+// ============================================
+
+/**
+ * User model - matches Django User from backend
+ * dj-rest-auth returns 'username' instead of separate first/last names
+ */
+export interface User {
+  id: string
+  username: string
+  email: string
+  first_name?: string
+  last_name?: string
+}
+
+/**
+ * Login API response - returned from POST /api/v1/auth/login/
+ * dj-rest-auth format
+ */
+export interface LoginResponse {
+  access: string  // JWT access token
+  refresh: string // JWT refresh token
+  user: User      // User profile data
+}
+
+/**
+ * Register API request body - sent to POST /api/v1/auth/registration/
+ * dj-rest-auth expects username, email, password1, password2
+ */
+export interface RegisterRequest {
+  username: string     // dj-rest-auth requires username (can be same as email)
+  email: string
+  password1: string    // dj-rest-auth uses password1/password2
+  password2: string
+}
+
+/**
+ * Register API response - dj-rest-auth format
+ */
+export interface RegisterResponse {
+  access: string
+  refresh: string
+  user: User
+}
+
+// ============================================
+// FORM TYPES
+// ============================================
+
+/**
+ * Login form data (used by react-hook-form)
+ */
+export interface LoginFormData {
+  email: string
+  password: string
+}
+
+/**
+ * Register form data (used by react-hook-form)
+ */
+export interface RegisterFormData {
+  email: string
+  password: string
+  password_confirm: string  // For frontend validation only
+}
+
+// ============================================
+// API ERROR TYPES
+// ============================================
+
+/**
+ * Standard API error response structure
+ */
+export interface ApiError {
+  error?: string
+  detail?: string
+  non_field_errors?: string[]
+  email?: string[]
+  password?: string[]
+  username?: string[]
+}
